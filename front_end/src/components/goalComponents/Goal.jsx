@@ -61,11 +61,10 @@ const Goal = () => {
       len = filterData.length;
       str = ele.subject.substring(0, ele.subject.length - 9);
     } else {
-      const filterData = data?.filter(
-        (e) =>
-          ele.subject == e.subject ||
-          ele.subject == e.subject.substring(0, ele.subject.length - 9)
-      );
+      const filterData = data?.filter((e) => {
+        ele.subject == e.subject.substring(0, e.subject.length - 9);
+      });
+      console.log(filterData);
       str = ele.subject;
       len = filterData.length;
     }
