@@ -22,6 +22,7 @@ const Goal = () => {
       });
   }, [deleteflag, pageNo, flag]);
   // console.log(data);
+
   const handleEdit = (ele) => {
     navigate("/newGoal", { state: ele });
   };
@@ -44,13 +45,34 @@ const Goal = () => {
       text = "You canceled!";
     }
   };
+
   const handleCopy = async (ele) => {
     setFlag(true);
     const token = localStorage.getItem("token");
+    let str;
+    let len;
+
+    if (ele.subject.includes("copy")) {
+      const filterData = data?.filter(
+        (e) =>
+          ele.subject.substring(0, ele.subject.length - 9) ==
+          e.subject.substring(0, ele.subject.length - 9)
+      );
+      len = filterData.length;
+      str = ele.subject.substring(0, ele.subject.length - 9);
+    } else {
+      const filterData = data?.filter(
+        (e) =>
+          ele.subject == e.subject ||
+          ele.subject == e.subject.substring(0, ele.subject.length - 9)
+      );
+      str = ele.subject;
+      len = filterData.length;
+    }
+    console.log(str);
     // copy(JSON.stringify(ele));
-    console.log(ele);
     let goalData = JSON.stringify({
-      subject: ele?.subject + " (copy)",
+      subject: str + ` (copy ${len})`,
       description: ele?.description,
       done: ele.done,
       endDate: ele?.endDate,
@@ -71,7 +93,7 @@ const Goal = () => {
       .catch(function (error) {
         console.log(error);
       });
-    // setFlag(false);
+    setFlag(false);
     navigate("/goals");
   };
 
@@ -87,21 +109,7 @@ const Goal = () => {
       setPageNo(pageNo + 1);
     }
   };
-  const count = (word) => {
-    let split = word.split(" ");
-    // console.log(split);
-    let ans = "";
-    let count = 0;
-    for (const element of split) {
-      // console.log(element);
-      if (element == "(copy)") {
-        count = count + 1;
-      } else {
-        ans = element;
-      }
-    }
-    return `${ans} (copy ${count}) `;
-  };
+
   return (
     <>
       <GoalNavbar />
@@ -114,11 +122,7 @@ const Goal = () => {
           >
             <div className="border border-2 my-1 sm:mx-7 md:mx-10 lg:mx-52 p-10">
               <div className="text-xl ">Goal Name</div>
-              <p className="pt-1">
-                {ele.subject.includes("(copy)")
-                  ? count(ele.subject)
-                  : ele.subject}
-              </p>
+              <p className="pt-1">{ele.subject}</p>
               <div className="text-xl pt-4">Details</div>
               <p className="pt-1">{ele.description}</p>
               <div className="text-xl pt-4">Due Date</div>
